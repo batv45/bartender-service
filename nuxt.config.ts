@@ -9,7 +9,10 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
   ],
-
+  routeRules: {
+    // Add cors headers on API routes
+    '/api/**': { cors: true },
+  },
   experimental: {
     // when using generate, payload js assets included in sw precache manifest
     // but missing on offline, disabling extraction it until fixed

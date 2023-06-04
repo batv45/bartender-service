@@ -5,6 +5,7 @@ import { NButton, NInputNumber, NModal } from 'naive-ui'
 const printBody = reactive({
   PrintRequestID: '56d6319a-edf9-415b-a24a-df11485ab3ab',
   Printer: 'PDF',
+  Copies: 1,
   DataEntryControls: {
     ttitle: '',
     tamount: 1,
@@ -14,7 +15,6 @@ const printBody = reactive({
   },
 })
 
-const { data: printData, execute } = useFetch('/api/print')
 const searchQuery = reactive({
   q: '',
 })
@@ -22,7 +22,6 @@ const { $jsonApi } = useNuxtApp()
 const res = ref()
 const showModal = ref(false)
 const selectVariant = ref()
-const copyAmount = ref(1)
 
 async function print(variant) {
   searchQuery.q = `#${variant.product?.data?.id}`
@@ -41,6 +40,7 @@ async function print(variant) {
   console.log(data)
   // await execute()
 }
+
 async function search() {
   if (!searchQuery.q.trim()) {
     res.value = null
@@ -113,7 +113,7 @@ function searchReset() {
       </template>
       <div flex flex-row>
         <label me-2 pt-2>Kopya sayısı</label>
-        <NInputNumber v-model:value="copyAmount" />
+        <NInputNumber v-model:value="printBody.Copies" />
       </div>
       <template #action>
         <NButton @click="print(selectVariant)">

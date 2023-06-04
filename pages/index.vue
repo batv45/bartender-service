@@ -33,6 +33,10 @@ watch(devMode, (val) => {
   devMode.value = val
 })
 
+onMounted(() => {
+  printBody.Printer = devMode.value ? 'PDF' : undefined
+})
+
 async function print(variant) {
   processPrint.value = true
   searchQuery.q = `#${variant.product?.data?.id}`

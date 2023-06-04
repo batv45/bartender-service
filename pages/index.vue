@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { map, pickBy } from 'lodash'
-import { NButton, NInputNumber, NModal } from 'naive-ui'
+import { NButton, NInputNumber, NModal, NSpin, useMessage } from 'naive-ui'
 
 const printBody = reactive({
   PrintRequestID: '56d6319a-edf9-415b-a24a-df11485ab3ab',
@@ -15,6 +15,7 @@ const printBody = reactive({
   },
 })
 
+const message = useMessage()
 const searchQuery = reactive({
   q: '',
 })
@@ -22,8 +23,10 @@ const { $jsonApi } = useNuxtApp()
 const res = ref()
 const showModal = ref(false)
 const selectVariant = ref()
+const processPrint = ref(false)
 
 async function print(variant) {
+  processPrint.value = true
   searchQuery.q = `#${variant.product?.data?.id}`
   await search()
   printBody.DataEntryControls.tkod = variant.sku ?? ''
@@ -36,18 +39,28 @@ async function print(variant) {
     immediate: false,
     method: 'post',
     body: printBody,
-  }).then(r => console.log(r, 'PIRRRRRRRRR')).catch(async (error) => {
+  }).then((r) => {
+    console.log(r, 'PrintResult')
+    if (r.success === true) {
+      message.success('Yazdırma işlemi başarılı.')
+      showModal.value = false
+    }
+  }).catch(async (error) => {
     if (error.data.statusCode == 'DataEntryRequired') {
       printBody.PrintRequestID = error.data.printRequestID
+
+      message.loading('Veri alındı tekrarlanıyor...')
       return await $fetch('/api/print', {
         method: 'post',
         body: printBody,
-      }).catch(err => err.data)
+      }).catch((err) => {
+        message.error('Yazdırırken hata oluştu!')
+        return err.data
+      })
     }
   })
-  console.log(data)
 
-  // await execute()
+  processPrint.value = false
 }
 
 async function search() {
@@ -70,6 +83,10 @@ function searchReset() {
 
 <template>
   <div w-full xl:w-6xl>
+    <div v-if="processPrint" text-center>
+      <NSpin size="large" />
+    </div>
+
     <pre>{{ printBody }}</pre>
     <div mb-3>
       <input v-model="searchQuery.q" type="text" me-2 class="form-search" @keydown.enter="search">

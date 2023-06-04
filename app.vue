@@ -1,7 +1,12 @@
 <script setup lang="ts">
 import type { GlobalThemeOverrides } from 'naive-ui'
 import { NConfigProvider, NMessageProvider } from 'naive-ui'
+import { useStorage } from '@vueuse/core'
 import { appName } from '~/constants'
+
+const devMode = useStorage('devMode', false)
+const { $jsonApi } = useNuxtApp()
+$jsonApi.axios.defaults.baseURL = devMode.value ? 'https://dev.teknorotbalans.online/api' : 'https://teknorotbalans.online/api'
 
 /**
  * Sums the passed percentage to the R, G or B of a HEX color

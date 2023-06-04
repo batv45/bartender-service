@@ -42,7 +42,6 @@ async function print(variant) {
   }).then(async (r: any) => {
     console.log(r, 'PrintResult')
     if (r.success === true) {
-      message.destroy()
       message.success('Yazdırma işlemi başarılı.')
       showModal.value = false
     }
@@ -50,7 +49,7 @@ async function print(variant) {
       if (r.statusCode == 'DataEntryRequired') {
         printBody.PrintRequestID = r.printRequestID
 
-        message.loading('Veri alındı tekrarlanıyor...')
+        const loadmess = message.loading('Veri alındı tekrarlanıyor...')
         return await $fetch('/api/print', {
           method: 'post',
           body: printBody,
@@ -58,7 +57,7 @@ async function print(variant) {
           console.log(rr, 'RePrintResult')
           if (rr.success === false) { message.error('Yazdırırken hata oluştu!') }
           else {
-            message.destroy()
+            loadmess.destroy()
             message.success('Yazdırma işlemi başarılı.')
             showModal.value = false
           }

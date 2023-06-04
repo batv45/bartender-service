@@ -39,27 +39,29 @@ async function print(variant) {
     immediate: false,
     method: 'post',
     body: printBody,
-  }).then((r) => {
+  }).then(async (r: any) => {
     console.log(r, 'PrintResult')
     if (r.success === true) {
       message.success('Yazdırma işlemi başarılı.')
       showModal.value = false
     }
-  }).catch(async (error) => {
-    console.log('HATA GELDİ', error.data)
-    if (error.data.statusCode == 'DataEntryRequired') {
-      printBody.PrintRequestID = error.data.printRequestID
+    else {
+      if (r.statusCode == 'DataEntryRequired') {
+        printBody.PrintRequestID = r.printRequestID
 
-      message.loading('Veri alındı tekrarlanıyor...')
-      return await $fetch('/api/print', {
-        method: 'post',
-        body: printBody,
-      }).catch((err) => {
-        message.error('Yazdırırken hata oluştu!')
-        return err.data
-      })
+        message.loading('Veri alındı tekrarlanıyor...')
+        return await $fetch('/api/print', {
+          method: 'post',
+          body: printBody,
+        }).then((rr) => {
+          if (rr.success === false)
+            message.error('Yazdırırken hata oluştu!')
+
+          return rr
+        })
+      }
     }
-  })
+  }).catch(error => error.data)
 
   processPrint.value = false
 }

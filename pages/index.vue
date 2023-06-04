@@ -54,6 +54,7 @@ async function print(variant) {
           method: 'post',
           body: printBody,
         }).then((rr) => {
+          console.log(r, 'RePrintResult')
           if (rr.success === false)
             message.error('Yazdırırken hata oluştu!')
 

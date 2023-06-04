@@ -42,6 +42,7 @@ async function print(variant) {
   }).then(async (r: any) => {
     console.log(r, 'PrintResult')
     if (r.success === true) {
+      message.destroy()
       message.success('Yazdırma işlemi başarılı.')
       showModal.value = false
     }
@@ -57,6 +58,7 @@ async function print(variant) {
           console.log(rr, 'RePrintResult')
           if (rr.success === false) { message.error('Yazdırırken hata oluştu!') }
           else {
+            message.destroy()
             message.success('Yazdırma işlemi başarılı.')
             showModal.value = false
           }

@@ -55,9 +55,11 @@ async function print(variant) {
           body: printBody,
         }).then((rr) => {
           console.log(rr, 'RePrintResult')
-          if (rr.success === false)
-            message.error('Yazdırırken hata oluştu!')
-
+          if (rr.success === false) { message.error('Yazdırırken hata oluştu!') }
+          else {
+            message.success('Yazdırma işlemi başarılı.')
+            showModal.value = false
+          }
           return rr
         })
       }

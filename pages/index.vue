@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { map, pickBy } from 'lodash'
-import { NButton, NInputNumber, NModal, NSpin, NSwitch, useMessage } from 'naive-ui'
+import { NButton, NInputNumber, NModal, NSpin, NSwitch, NTooltip, useMessage } from 'naive-ui'
 import { useStorage } from '@vueuse/core'
 
 const printBody = reactive({
@@ -136,14 +136,16 @@ function searchReset() {
         <thead>
           <tr>
             <th class="w-1">
-              ProductID
+              #ID
             </th>
             <th class="w-1">
               Kod
             </th>
             <th>Açıklama</th>
             <th>Ana Ürün</th>
-            <th>Fiyat</th>
+            <th w-1>
+              Fiyat
+            </th>
             <th class="w-1">
               İşlem
             </th>
@@ -151,11 +153,19 @@ function searchReset() {
         </thead>
         <tbody>
           <tr v-for="variant in res">
-            <td>{{ variant.product?.data?.id }}</td>
+            <td>#{{ variant.id }}</td>
             <td>{{ variant.sku }}</td>
             <td>{{ variant.name }}</td>
-            <td>{{ variant.product?.data?.name }}</td>
-            <td>{{ variant.price }}</td>
+            <td>#{{ variant.product?.data?.id }} - {{ variant.product?.data?.name }}</td>
+            <td>
+              <NTooltip trigger="hover">
+                <template #trigger>
+                  <span> {{ trl(variant.price) }}
+                  </span>
+                </template>
+                KDV'li Alış: {{ trl(variant.buy_price) }}
+              </NTooltip>
+            </td>
             <td>
               <NButton type="info" @click="selectVariant = variant; showModal = true">
                 Etiket Bas

@@ -30,7 +30,7 @@ function lighten(color: string, amount: number) {
 }
 
 const color = useColorMode()
-const appTheme = '#3C3D48'
+const appTheme = '#2080f0'
 const themeOverrides: GlobalThemeOverrides = {
   common: {
     primaryColor: appTheme,

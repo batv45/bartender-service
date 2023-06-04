@@ -6,11 +6,16 @@ const { $jsonApi } = useNuxtApp()
 const testResult = ref()
 
 function test() {
-  $jsonApi.get('/v1/test')
-    .catch((err) => {
-      if (err.response.data.jsonapi?.version)
-        testResult.value = err.response.data
-    })
+  try {
+    $jsonApi.get('/v1/test')
+      .catch((err) => {
+        if (err.response.data.jsonapi?.version)
+          testResult.value = err.response.data
+      })
+  }
+  catch (error) {
+
+  }
 }
 test()
 </script>

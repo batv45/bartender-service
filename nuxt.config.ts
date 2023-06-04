@@ -8,6 +8,13 @@ export default defineNuxtConfig({
     '@pinia/nuxt',
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
+    [
+      'nuxt-jsonapi',
+      {
+        baseURL: 'https://dev.teknorotbalans.online/api',
+        /* other module options */
+      },
+    ],
   ],
   routeRules: {
     // Add cors headers on API routes
@@ -22,7 +29,8 @@ export default defineNuxtConfig({
   },
 
   css: [
-    '@unocss/reset/tailwind.css',
+    '@unocss/reset/tailwind-compat.css',
+    '@/assets/css/main.css',
   ],
 
   colorMode: {

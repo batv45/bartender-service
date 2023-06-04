@@ -1,0 +1,7 @@
+
+@import 'vfonts/Lato.css'; 
+ 
+
+input { 
+    --at-apply:  border rounded bg-white p-2 shadow outline-none  lh-none !important
+}

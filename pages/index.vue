@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { map, pickBy } from 'lodash'
-import { NButton, NInputNumber, NModal, NSpin, useMessage } from 'naive-ui'
+import { NButton, NInputNumber, NModal, NSpin, NSwitch, useMessage } from 'naive-ui'
+import { useStorage } from '@vueuse/core'
 
 const printBody = reactive({
   PrintRequestID: '56d6319a-edf9-415b-a24a-df11485ab3ab',
@@ -14,7 +15,6 @@ const printBody = reactive({
     tcars: '',
   },
 })
-
 const message = useMessage()
 const searchQuery = reactive({
   q: '',
@@ -24,6 +24,14 @@ const res = ref()
 const showModal = ref(false)
 const selectVariant = ref()
 const processPrint = ref(false)
+const devMode = useStorage('devMode', false)
+watch(devMode, (val) => {
+  $jsonApi.axios.defaults.baseURL = val ? 'https://dev.teknorotbalans.online/api' : 'https://teknorotbalans.online/api'
+  printBody.Printer = val ? 'PDF' : undefined
+  console.log($jsonApi.axios.defaults.baseURL)
+  res.value = null
+  devMode.value = val
+})
 
 async function print(variant) {
   processPrint.value = true
@@ -90,16 +98,33 @@ function searchReset() {
 
 <template>
   <div w-full xl:w-6xl>
-    <div v-if="processPrint" text-center>
-      <NSpin size="large" />
+    <div mb-3>
+      <div v-if="processPrint" text-center>
+        <NSpin size="large" />
+      </div>
+    </div>
+    <div class="mb-3 text-right">
+      <pre v-if="devMode" mt-2 text-left>{{ printBody }}</pre>
     </div>
 
-    <pre>{{ printBody }}</pre>
-    <div mb-3>
-      <input v-model="searchQuery.q" type="text" me-2 class="form-search" @keydown.enter="search">
-      <NButton type="info" @click="search">
-        Ara
-      </NButton>
+    <div mb-3 flex-row justify-between md:flex>
+      <div>
+        <input v-model="searchQuery.q" type="text" me-2 w-80 class="form-search" @keydown.enter="search">
+        <NButton type="info" @click="search">
+          Ara
+        </NButton>
+      </div>
+      <div>
+        <span me-2 mt-2 inline-block border rounded-2 bg-gray-100 p-2 vertical-middle md:mt-0>Test Modu: <NSwitch v-model:value="devMode" ms-1>
+          <template #checked>
+            Açık
+          </template>
+          <template #unchecked>
+            Kapalı
+          </template>
+        </NSwitch>
+        </span>
+      </div>
     </div>
     <div v-if="searchQuery.q" mb-2>
       <NButton secondary type="error" @click="searchReset">

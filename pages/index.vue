@@ -36,8 +36,17 @@ async function print(variant) {
     immediate: false,
     method: 'post',
     body: printBody,
-  }).catch(error => error.data)
+  }).then(r => console.log(r, 'PIRRRRRRRRR')).catch(async (error) => {
+    if (error.data.statusCode == 'DataEntryRequired') {
+      printBody.PrintRequestID = error.data.printRequestID
+      return await $fetch('/api/print', {
+        method: 'post',
+        body: printBody,
+      }).catch(err => err.data)
+    }
+  })
   console.log(data)
+
   // await execute()
 }
 

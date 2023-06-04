@@ -46,6 +46,7 @@ async function print(variant) {
       showModal.value = false
     }
   }).catch(async (error) => {
+    console.log('HATA GELDİ', error.data)
     if (error.data.statusCode == 'DataEntryRequired') {
       printBody.PrintRequestID = error.data.printRequestID
 
